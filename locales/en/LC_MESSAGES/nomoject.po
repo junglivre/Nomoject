@@ -1,0 +1,66 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Nomoject 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+
+msgid "Nomoject - Device Manager"
+msgstr "Nomoject - Device Manager"
+
+msgid "Select devices to make non-removable:"
+msgstr "Select devices to make non-removable:"
+
+msgid "Refresh Devices"
+msgstr "Refresh Devices"
+
+msgid "Generate Registry File"
+msgstr "Generate Registry File"
+
+msgid "Loading devices..."
+msgstr "Loading devices..."
+
+msgid "Found %d removable device(s)"
+msgstr "Found %d removable device(s)"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Failed to access registry: %s"
+msgstr "Failed to access registry: %s"
+
+msgid "Error loading devices"
+msgstr "Error loading devices"
+
+msgid "Warning"
+msgstr "Warning"
+
+msgid "Please select at least one device."
+msgstr "Please select at least one device."
+
+msgid "Save Registry File"
+msgstr "Save Registry File"
+
+msgid "Registry Files (*.reg);;All Files (*.*)"
+msgstr "Registry Files (*.reg);;All Files (*.*)"
+
+msgid "Generating registry file..."
+msgstr "Generating registry file..."
+
+msgid "Registry file generated successfully"
+msgstr "Registry file generated successfully"
+
+msgid "Success"
+msgstr "Success"
+
+msgid "Registry file generated successfully. Would you like to apply it now?"
+msgstr "Registry file generated successfully. Would you like to apply it now?"
+
+msgid "Applying registry changes..."
+msgstr "Applying registry changes..."
+
+msgid "Failed to save registry file: %s"
+msgstr "Failed to save registry file: %s"
+
+msgid "Error generating registry file"
+msgstr "Error generating registry file" 

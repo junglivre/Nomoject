@@ -1,0 +1,66 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Nomoject 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+
+msgid "Nomoject - Device Manager"
+msgstr "Nomoject - Gerenciador de Dispositivos"
+
+msgid "Select devices to make non-removable:"
+msgstr "Selecione os dispositivos para tornar não removíveis:"
+
+msgid "Refresh Devices"
+msgstr "Atualizar Dispositivos"
+
+msgid "Generate Registry File"
+msgstr "Gerar Arquivo de Registro"
+
+msgid "Loading devices..."
+msgstr "Carregando dispositivos..."
+
+msgid "Found %d removable device(s)"
+msgstr "Encontrado(s) %d dispositivo(s) removível(is)"
+
+msgid "Error"
+msgstr "Erro"
+
+msgid "Failed to access registry: %s"
+msgstr "Falha ao acessar o registro: %s"
+
+msgid "Error loading devices"
+msgstr "Erro ao carregar dispositivos"
+
+msgid "Warning"
+msgstr "Aviso"
+
+msgid "Please select at least one device."
+msgstr "Por favor, selecione pelo menos um dispositivo."
+
+msgid "Save Registry File"
+msgstr "Salvar Arquivo de Registro"
+
+msgid "Registry Files (*.reg);;All Files (*.*)"
+msgstr "Arquivos de Registro (*.reg);;Todos os Arquivos (*.*)"
+
+msgid "Generating registry file..."
+msgstr "Gerando arquivo de registro..."
+
+msgid "Registry file generated successfully"
+msgstr "Arquivo de registro gerado com sucesso"
+
+msgid "Success"
+msgstr "Sucesso"
+
+msgid "Registry file generated successfully. Would you like to apply it now?"
+msgstr "Arquivo de registro gerado com sucesso. Deseja aplicá-lo agora?"
+
+msgid "Applying registry changes..."
+msgstr "Aplicando alterações no registro..."
+
+msgid "Failed to save registry file: %s"
+msgstr "Falha ao salvar arquivo de registro: %s"
+
+msgid "Error generating registry file"
+msgstr "Erro ao gerar arquivo de registro" 
