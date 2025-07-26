@@ -4,6 +4,8 @@
 
 Nomoject (No More Eject!) é uma aplicação Windows projetada para gerenciar dispositivos hotplug em máquinas virtuais QEMU. Permite aos usuários identificar e modificar as capacidades de dispositivos PCI removíveis através de modificações no registro do Windows.
 
+![Janela Principal do Nomoject](img/main_br.png)
+
 ## Funcionalidades
 
 - Lista todos os dispositivos PCI com capacidade de remoção
