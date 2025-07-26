@@ -11,6 +11,8 @@ Nomoject (No More Eject!) é uma aplicação Windows projetada para gerenciar di
 - Lista todos os dispositivos PCI com capacidade de remoção
 - Seleção fácil de dispositivos com checkboxes
 - Gera arquivos de registro para tornar dispositivos não-removíveis
+- Elevação automática de UAC para tarefas administrativas
+- Cria tarefas de inicialização para aplicar alterações automaticamente
 - Interface moderna com tema escuro
 - Compatível com Windows 7/Server 2008 e mais recentes
 - Suporte multi-idioma
@@ -21,6 +23,7 @@ Nomoject (No More Eject!) é uma aplicação Windows projetada para gerenciar di
 - Corrigir "Remover Hardware com Segurança" mostrando dispositivos virtuais
 - Gerenciar dispositivos PCI passthrough em máquinas virtuais
 - Modificação em lote de múltiplos dispositivos
+- Alterações automáticas no registro na inicialização do sistema
 
 ## Instalação
 
@@ -59,11 +62,14 @@ O executável será gerado na pasta `dist`.
 
 O Nomoject analisa o Registro do Windows em `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\PCI` procurando por dispositivos com valor `Capabilities` igual a 6 (removível). Ao gerar o arquivo de registro, ele altera este valor para 2 (não-removível) para os dispositivos selecionados.
 
+A aplicação também pode criar uma tarefa agendada que é executada na inicialização do sistema para aplicar essas alterações automaticamente, garantindo que seus dispositivos permaneçam não-removíveis mesmo após atualizações do Windows ou alterações no sistema.
+
 ## Considerações de Segurança
 
 - A aplicação requer acesso ao registro para funcionar
 - Arquivos .reg gerados modificam configurações do sistema
-- Execute como administrador ao aplicar alterações no registro
+- Elevação automática de UAC quando acesso administrativo é necessário
+- Tarefas agendadas são executadas com privilégios de SYSTEM
 - Sempre revise o arquivo .reg gerado antes de aplicá-lo
 
 ## Contribuindo

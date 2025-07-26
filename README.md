@@ -11,6 +11,8 @@ Nomoject (No More Eject!) is a Windows application designed to manage hotplug de
 - Lists all PCI devices with removable capabilities
 - Easy device selection with checkboxes
 - Generates registry files to make devices non-removable
+- Automatic UAC elevation for administrative tasks
+- Creates startup tasks to apply changes automatically
 - Dark theme modern interface
 - Compatible with Windows 7/Server 2008 and newer
 - Multi-language support
@@ -21,6 +23,7 @@ Nomoject (No More Eject!) is a Windows application designed to manage hotplug de
 - Fix "Safely Remove Hardware" showing virtual devices
 - Manage PCI passthrough devices in virtual machines
 - Batch modification of multiple devices
+- Automatic registry changes on system startup
 
 ## Installation
 
@@ -59,11 +62,14 @@ The executable will be generated in the `dist` folder.
 
 Nomoject scans the Windows Registry under `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\PCI` for devices with `Capabilities` value of 6 (removable). When generating the registry file, it changes this value to 2 (non-removable) for selected devices.
 
+The application can also create a scheduled task that runs at system startup to automatically apply these changes, ensuring your devices remain non-removable even after Windows updates or system changes.
+
 ## Security Considerations
 
 - The application requires registry access to function
 - Generated .reg files modify system settings
-- Run as administrator when applying registry changes
+- Automatic UAC elevation when administrative access is needed
+- Scheduled tasks run with SYSTEM privileges
 - Always review the generated .reg file before applying
 
 ## Contributing

@@ -101,6 +101,9 @@ class NomojectMainWindow(QMainWindow):
                 font-weight: bold;
             }
         """)
+        title.setOpenExternalLinks(True)
+        title.setText("<a href='https://github.com/junglivre/Nomoject' style='color: #ffffff; text-decoration: none;'>Nomoject</a>")
+        title.setCursor(Qt.PointingHandCursor)
         
         # Language selector container
         lang_container = QFrame()
@@ -203,6 +206,24 @@ class NomojectMainWindow(QMainWindow):
                 padding: 5px;
             }
         """)
+        
+        # Add author link to the right side of status bar
+        author_label = QLabel()
+        author_label.setStyleSheet("""
+            QLabel {
+                color: #666666;
+                padding-right: 5px;
+            }
+            QLabel a {
+                color: #666666;
+                text-decoration: none;
+            }
+        """)
+        author_label.setOpenExternalLinks(True)
+        author_label.setText("<a href='https://jung.moe' style='color: #666666; text-decoration: none;'>by jung</a>")
+        author_label.setCursor(Qt.PointingHandCursor)
+        self.statusBar.addPermanentWidget(author_label)
+        
         self.setStatusBar(self.statusBar)
         
         # Load devices
