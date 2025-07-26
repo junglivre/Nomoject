@@ -1,7 +1,3 @@
-# descontinuado porque Python é ridiculamente pesado quando compilado com PyInstaller
-
----
-
 # Nomoject
 
 [en-US](README.md) | pt-BR

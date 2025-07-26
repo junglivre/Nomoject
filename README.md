@@ -1,7 +1,3 @@
-# deprecated because Python is ridiculously huge when compiled with PyInstaller
-
----
-
 # Nomoject
 
 en-US | [pt-BR](README_br.md)

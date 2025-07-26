@@ -8,8 +8,8 @@ msgstr ""
 msgid "Nomoject - Device Manager"
 msgstr "Nomoject - Device Manager"
 
-msgid "Select devices to make non-removable:"
-msgstr "Select devices to make non-removable:"
+msgid "Select devices to hide from Eject popup"
+msgstr "Select devices to hide from Eject popup"
 
 msgid "Refresh Devices"
 msgstr "Refresh Devices"

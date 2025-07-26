@@ -1,14 +1,23 @@
 import os
 import sys
 import winreg
-import gettext
 import locale
+import gettext
+import urllib3
+import warnings
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QFont, QPalette, QColor
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                            QListWidget, QPushButton, QMessageBox, QFileDialog,
                            QLabel, QListWidgetItem, QHBoxLayout, QFrame,
                            QStatusBar, QStyleFactory, QRadioButton, QButtonGroup)
+
+# Suppress warnings from deprecated modules and other warnings
+os.environ['PYTHONWARNINGS'] = 'ignore::DeprecationWarning'
+warnings.filterwarnings('ignore', message='.*sipPyTypeDict.*')
+warnings.filterwarnings('ignore', category=DeprecationWarning)
+warnings.filterwarnings('ignore', category=DeprecationWarning, module='sip')
+warnings.filterwarnings('ignore', category=urllib3.exceptions.InsecureRequestWarning)
 
 def get_locales_path():
     """Returns the correct path to the locales folder, whether in development or compiled"""
@@ -25,11 +34,11 @@ class DeviceListWidget(QListWidget):
         self.setSelectionMode(QListWidget.NoSelection)  # Disable selection highlighting
         self.setStyleSheet("""
             QListWidget {
-                background-color: #34495E;
-                border: 1px solid #2C3E50;
-                border-radius: 5px;
+                background-color: #1e1e1e;
+                border: 1px solid #333333;
+                border-radius: 4px;
                 padding: 5px;
-                color: #ECF0F1;
+                color: #ffffff;
             }
             QListWidget::item {
                 padding: 8px;
@@ -37,27 +46,7 @@ class DeviceListWidget(QListWidget):
                 border-radius: 3px;
             }
             QListWidget::item:hover {
-                background-color: #445566;
-            }
-            QCheckBox {
-                color: #ECF0F1;
-            }
-            QCheckBox::indicator {
-                width: 18px;
-                height: 18px;
-            }
-            QCheckBox::indicator:unchecked {
-                background-color: #34495E;
-                border: 2px solid #7F8C8D;
-                border-radius: 3px;
-            }
-            QCheckBox::indicator:checked {
-                background-color: #2980B9;
-                border: 2px solid #2980B9;
-                border-radius: 3px;
-            }
-            QCheckBox::indicator:hover {
-                border-color: #3498DB;
+                background-color: #2d2d2d;
             }
         """)
 
@@ -65,11 +54,11 @@ class NomojectMainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        # Detectar idioma do sistema
+        # Detect system language
         system_lang = locale.getdefaultlocale()[0]
         self.current_lang = 'pt_BR' if system_lang and system_lang.startswith('pt') else 'en'
         
-        # Configuração do gettext
+        # Setup translation
         self.setup_translation()
         
         self.setWindowTitle(self._("Nomoject - Device Manager"))
@@ -92,9 +81,9 @@ class NomojectMainWindow(QMainWindow):
         header_frame.setFrameShape(QFrame.StyledPanel)
         header_frame.setStyleSheet("""
             QFrame {
-                background-color: #2C3E50;
-                border-radius: 5px;
-                padding: 10px;
+                background-color: #252525;
+                border-radius: 4px;
+                padding: 15px;
             }
         """)
         header_layout = QVBoxLayout(header_frame)
@@ -104,7 +93,7 @@ class NomojectMainWindow(QMainWindow):
         title = QLabel("Nomoject")
         title.setStyleSheet("""
             QLabel {
-                color: #ECF0F1;
+                color: #ffffff;
                 font-size: 24px;
                 font-weight: bold;
             }
@@ -114,31 +103,8 @@ class NomojectMainWindow(QMainWindow):
         lang_container = QFrame()
         lang_container.setStyleSheet("""
             QFrame {
-                background-color: #34495E;
-                border-radius: 3px;
+                background-color: transparent;
                 padding: 8px;
-            }
-            QRadioButton {
-                color: #ECF0F1;
-                padding: 3px;
-                spacing: 5px;
-            }
-            QRadioButton::indicator {
-                width: 16px;
-                height: 16px;
-            }
-            QRadioButton::indicator:unchecked {
-                background-color: #34495E;
-                border: 2px solid #7F8C8D;
-                border-radius: 8px;
-            }
-            QRadioButton::indicator:checked {
-                background-color: #2980B9;
-                border: 2px solid #2980B9;
-                border-radius: 8px;
-            }
-            QRadioButton::indicator:hover {
-                border-color: #3498DB;
             }
         """)
         
@@ -169,10 +135,10 @@ class NomojectMainWindow(QMainWindow):
         title_row.addWidget(lang_container)
         header_layout.addLayout(title_row)
         
-        description = QLabel(self._("Select devices to make non-removable:"))
+        description = QLabel(self._("Select devices to hide from Eject popup"))
         description.setStyleSheet("""
             QLabel {
-                color: #BDC3C7;
+                color: #cccccc;
                 font-size: 14px;
             }
         """)
@@ -197,23 +163,23 @@ class NomojectMainWindow(QMainWindow):
         # Style buttons
         button_style = """
             QPushButton {
-                background-color: #2980B9;
+                background-color: #0078d4;
                 color: white;
                 border: none;
                 padding: 10px 20px;
-                border-radius: 5px;
+                border-radius: 4px;
                 font-size: 14px;
                 min-width: 150px;
             }
             QPushButton:hover {
-                background-color: #3498DB;
+                background-color: #1084d8;
             }
             QPushButton:pressed {
-                background-color: #2475A8;
+                background-color: #006cbd;
             }
             QPushButton:disabled {
-                background-color: #445566;
-                color: #7F8C8D;
+                background-color: #333333;
+                color: #666666;
             }
         """
         refresh_button.setStyleSheet(button_style)
@@ -229,8 +195,8 @@ class NomojectMainWindow(QMainWindow):
         self.statusBar = QStatusBar()
         self.statusBar.setStyleSheet("""
             QStatusBar {
-                background-color: #2C3E50;
-                color: #BDC3C7;
+                background-color: #1e1e1e;
+                color: #cccccc;
                 padding: 5px;
             }
         """)
@@ -241,20 +207,80 @@ class NomojectMainWindow(QMainWindow):
     
     def setup_dark_theme(self):
         palette = QPalette()
-        palette.setColor(QPalette.Window, QColor("#2C3E50"))
-        palette.setColor(QPalette.WindowText, QColor("#ECF0F1"))
-        palette.setColor(QPalette.Base, QColor("#34495E"))
-        palette.setColor(QPalette.AlternateBase, QColor("#445566"))
-        palette.setColor(QPalette.ToolTipBase, QColor("#ECF0F1"))
-        palette.setColor(QPalette.ToolTipText, QColor("#ECF0F1"))
-        palette.setColor(QPalette.Text, QColor("#ECF0F1"))
-        palette.setColor(QPalette.Button, QColor("#34495E"))
-        palette.setColor(QPalette.ButtonText, QColor("#ECF0F1"))
+        palette.setColor(QPalette.Window, QColor("#1e1e1e"))
+        palette.setColor(QPalette.WindowText, QColor("#ffffff"))
+        palette.setColor(QPalette.Base, QColor("#252525"))
+        palette.setColor(QPalette.AlternateBase, QColor("#2d2d2d"))
+        palette.setColor(QPalette.ToolTipBase, QColor("#ffffff"))
+        palette.setColor(QPalette.ToolTipText, QColor("#ffffff"))
+        palette.setColor(QPalette.Text, QColor("#ffffff"))
+        palette.setColor(QPalette.Button, QColor("#333333"))
+        palette.setColor(QPalette.ButtonText, QColor("#ffffff"))
         palette.setColor(QPalette.BrightText, Qt.red)
-        palette.setColor(QPalette.Link, QColor("#2980B9"))
-        palette.setColor(QPalette.Highlight, QColor("#2980B9"))
-        palette.setColor(QPalette.HighlightedText, QColor("#ECF0F1"))
+        palette.setColor(QPalette.Link, QColor("#0078d4"))
+        palette.setColor(QPalette.Highlight, QColor("#0078d4"))
+        palette.setColor(QPalette.HighlightedText, QColor("#ffffff"))
         self.setPalette(palette)
+        
+        # Estilo global da aplicação
+        self.setStyleSheet("""
+            QMainWindow {
+                background-color: #1e1e1e;
+            }
+            QRadioButton {
+                color: #ffffff;
+                spacing: 5px;
+            }
+            QRadioButton::indicator {
+                width: 16px;
+                height: 16px;
+                border: 1.2px solid #666666;
+                border-radius: 8px;
+                background-color: transparent;
+            }
+            QRadioButton::indicator:hover {
+                border-color: #0078d4;
+            }
+            QRadioButton::indicator:checked {
+                border: 1.2px solid #0078d4;
+                background: qradialgradient(
+                    cx:0.5, cy:0.5,
+                    fx:0.5, fy:0.5,
+                    radius:0.45,
+                    stop:0 #0078d4,
+                    stop:0.6 #0078d4,
+                    stop:0.7 transparent
+                );
+            }
+            QCheckBox {
+                color: #ffffff;
+                spacing: 5px;
+            }
+            QCheckBox::indicator {
+                width: 16px;
+                height: 16px;
+            }
+            QMessageBox {
+                background-color: #1e1e1e;
+            }
+            QMessageBox QLabel {
+                color: #ffffff;
+            }
+            QMessageBox QPushButton {
+                background-color: #0078d4;
+                color: white;
+                border: none;
+                padding: 6px 12px;
+                border-radius: 4px;
+                min-width: 80px;
+            }
+            QMessageBox QPushButton:hover {
+                background-color: #1084d8;
+            }
+            QMessageBox QPushButton:pressed {
+                background-color: #006cbd;
+            }
+        """)
     
     def setup_translation(self):
         """Sets up translation based on current language"""
@@ -279,7 +305,7 @@ class NomojectMainWindow(QMainWindow):
             if label.text() == "Nomoject":
                 continue  # Skip the title that should not be translated
             if "Select devices" in label.text() or "Selecione os dispositivos" in label.text():
-                label.setText(self._("Select devices to make non-removable:"))
+                label.setText(self._("Select devices to hide from Eject popup"))
                 break
         
         # Update buttons
