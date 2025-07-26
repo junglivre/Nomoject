@@ -15,6 +15,8 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                            QLabel, QListWidgetItem, QHBoxLayout, QFrame,
                            QStatusBar, QStyleFactory, QRadioButton, QButtonGroup)
 
+VERSION = "1.0.0"
+
 # Suppress warnings from deprecated modules and other warnings
 os.environ['PYTHONWARNINGS'] = 'ignore::DeprecationWarning'
 warnings.filterwarnings('ignore', message='.*sipPyTypeDict.*')
@@ -93,7 +95,15 @@ class NomojectMainWindow(QMainWindow):
         
         # Add title row with language selector
         title_row = QHBoxLayout()
-        title = QLabel("Nomoject")
+        
+        # Title container for name and version
+        title_container = QWidget()
+        title_layout = QHBoxLayout(title_container)
+        title_layout.setContentsMargins(0, 0, 0, 0)
+        title_layout.setSpacing(10)
+        
+        # App name
+        title = QLabel()
         title.setStyleSheet("""
             QLabel {
                 color: #ffffff;
@@ -104,6 +114,22 @@ class NomojectMainWindow(QMainWindow):
         title.setOpenExternalLinks(True)
         title.setText("<a href='https://github.com/junglivre/Nomoject' style='color: #ffffff; text-decoration: none;'>Nomoject</a>")
         title.setCursor(Qt.PointingHandCursor)
+        
+        # Version
+        version = QLabel()
+        version.setStyleSheet("""
+            QLabel {
+                color: #666666;
+                font-size: 14px;
+            }
+        """)
+        version.setOpenExternalLinks(True)
+        version.setText(f"<a href='https://github.com/junglivre/Nomoject/releases' style='color: #666666; text-decoration: none;'>v{VERSION}</a>")
+        version.setCursor(Qt.PointingHandCursor)
+        
+        title_layout.addWidget(title)
+        title_layout.addWidget(version)
+        title_layout.addStretch()
         
         # Language selector container
         lang_container = QFrame()
@@ -136,7 +162,7 @@ class NomojectMainWindow(QMainWindow):
         # Connect language change signal
         self.lang_group.buttonClicked.connect(self.on_language_changed)
         
-        title_row.addWidget(title)
+        title_row.addWidget(title_container)
         title_row.addStretch()
         title_row.addWidget(lang_container)
         header_layout.addLayout(title_row)
