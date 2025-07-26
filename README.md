@@ -26,8 +26,7 @@ Nomoject (No More Eject!) is a Windows application designed to manage hotplug de
 
 ### From Release (Recommended)
 1. Download the latest release from the [Releases](https://github.com/junglivre/Nomoject/releases/latest) page
-2. Extract the ZIP file
-3. Run `Nomoject.exe`
+2. Run `Nomoject.exe`
 
 ### From Source
 1. Install Python 3.7 or newer
@@ -70,10 +69,6 @@ Nomoject scans the Windows Registry under `HKEY_LOCAL_MACHINE\SYSTEM\CurrentCont
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 

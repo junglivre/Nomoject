@@ -26,8 +26,7 @@ Nomoject (No More Eject!) é uma aplicação Windows projetada para gerenciar di
 
 ### Via Release (Recomendado)
 1. Baixe a última versão da página de [Releases](https://github.com/junglivre/Nomoject/releases/latest)
-2. Extraia o arquivo ZIP
-3. Execute o `Nomoject.exe`
+2. Execute o `Nomoject.exe`
 
 ### Via Código Fonte
 1. Instale Python 3.7 ou mais recente
@@ -70,10 +69,6 @@ O Nomoject analisa o Registro do Windows em `HKEY_LOCAL_MACHINE\SYSTEM\CurrentCo
 ## Contribuindo
 
 Contribuições são bem-vindas! Sinta-se à vontade para enviar um Pull Request.
-
-## Licença
-
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
 ## Agradecimentos
 
