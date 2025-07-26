@@ -53,8 +53,26 @@ msgstr "Arquivo de registro gerado com sucesso"
 msgid "Success"
 msgstr "Sucesso"
 
-msgid "Registry file generated successfully. Would you like to apply it now?"
-msgstr "Arquivo de registro gerado com sucesso. Deseja aplicá-lo agora?"
+msgid "Registry file generated successfully. Would you like to create a startup task to apply it automatically?"
+msgstr "Arquivo de registro gerado com sucesso. Deseja criar uma tarefa de inicialização para aplicá-lo automaticamente?"
+
+msgid "Startup task created successfully. The registry changes will be applied automatically at system startup."
+msgstr "Tarefa de inicialização criada com sucesso. As alterações no registro serão aplicadas automaticamente na inicialização do sistema."
+
+msgid "Failed to create startup task: %s"
+msgstr "Falha ao criar tarefa de inicialização: %s"
+
+msgid "Startup task created successfully"
+msgstr "Tarefa de inicialização criada com sucesso"
+
+msgid "Error creating startup task"
+msgstr "Erro ao criar tarefa de inicialização"
+
+msgid "Apply Now"
+msgstr "Aplicar Agora"
+
+msgid "Would you like to apply the registry changes now?"
+msgstr "Deseja aplicar as alterações no registro agora?"
 
 msgid "Applying registry changes..."
 msgstr "Aplicando alterações no registro..."
@@ -64,3 +82,12 @@ msgstr "Falha ao salvar arquivo de registro: %s"
 
 msgid "Error generating registry file"
 msgstr "Erro ao gerar arquivo de registro" 
+
+msgid "Run Now"
+msgstr "Executar Agora"
+
+msgid "Would you like to run the task now?"
+msgstr "Deseja executar a tarefa agora?"
+
+msgid "Task executed successfully"
+msgstr "Tarefa executada com sucesso" 

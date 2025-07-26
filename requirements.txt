@@ -1,3 +1,4 @@
+pyuac==0.0.3
 PyQt5==5.15.9
-winreg-unicode==1.0.3
+pypiwin32==223
 pyinstaller==6.3.0

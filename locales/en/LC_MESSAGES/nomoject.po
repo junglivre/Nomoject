@@ -53,14 +53,32 @@ msgstr "Registry file generated successfully"
 msgid "Success"
 msgstr "Success"
 
-msgid "Registry file generated successfully. Would you like to apply it now?"
-msgstr "Registry file generated successfully. Would you like to apply it now?"
+msgid "Registry file generated successfully. Would you like to create a startup task to apply it automatically?"
+msgstr "Registry file generated successfully. Would you like to create a startup task to apply it automatically?"
 
-msgid "Applying registry changes..."
-msgstr "Applying registry changes..."
+msgid "Startup task created successfully. The registry changes will be applied automatically at system startup."
+msgstr "Startup task created successfully. The registry changes will be applied automatically at system startup."
 
-msgid "Failed to save registry file: %s"
-msgstr "Failed to save registry file: %s"
+msgid "Failed to create startup task: %s"
+msgstr "Failed to create startup task: %s"
 
-msgid "Error generating registry file"
-msgstr "Error generating registry file" 
+msgid "Startup task created successfully"
+msgstr "Startup task created successfully"
+
+msgid "Error creating startup task"
+msgstr "Error creating startup task"
+
+msgid "Apply Now"
+msgstr "Apply Now"
+
+msgid "Would you like to apply the registry changes now?"
+msgstr "Would you like to apply the registry changes now?" 
+
+msgid "Run Now"
+msgstr "Run Now"
+
+msgid "Would you like to run the task now?"
+msgstr "Would you like to run the task now?"
+
+msgid "Task executed successfully"
+msgstr "Task executed successfully" 

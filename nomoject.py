@@ -1,10 +1,13 @@
 import os
 import sys
+import pyuac
 import winreg
 import locale
 import gettext
 import urllib3
 import warnings
+import subprocess
+from pathlib import Path
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QFont, QPalette, QColor
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
@@ -222,7 +225,7 @@ class NomojectMainWindow(QMainWindow):
         palette.setColor(QPalette.HighlightedText, QColor("#ffffff"))
         self.setPalette(palette)
         
-        # Estilo global da aplicação
+        # Global application style
         self.setStyleSheet("""
             QMainWindow {
                 background-color: #1e1e1e;
@@ -396,6 +399,34 @@ class NomojectMainWindow(QMainWindow):
             except:
                 pass
     
+    def create_scheduled_task(self, reg_file_path):
+        """Creates a scheduled task to apply the registry file at system startup"""
+        try:
+            # Create _utils directory if it doesn't exist
+            system_drive = os.environ['SystemDrive']
+            utils_dir = os.path.join(system_drive + "\\", "Windows", "System32", "_utils")
+            os.makedirs(utils_dir, exist_ok=True)
+            
+            # Copy registry file to _utils directory
+            new_reg_path = os.path.join(utils_dir, os.path.basename(reg_file_path))
+            import shutil
+            shutil.copy2(reg_file_path, new_reg_path)
+            
+            # Create task command with correct path
+            task_name = "NomojectRegistryApply"
+            task_cmd = f'schtasks /Create /TN "{task_name}" /TR "regedit.exe /s \\"%SystemDrive%\\Windows\\System32\\_utils\\{os.path.basename(reg_file_path)}\\"" /SC ONSTART /RU SYSTEM /RL HIGHEST /F'
+            
+            # Execute command as administrator
+            result = subprocess.run(task_cmd, shell=True, capture_output=True, text=True)
+            
+            if result.returncode != 0:
+                raise Exception(result.stderr)
+                
+            return True, new_reg_path
+            
+        except Exception as e:
+            return False, str(e)
+
     def generate_registry_file(self):
         selected_items = [self.device_list.item(i) for i in range(self.device_list.count())
                          if self.device_list.item(i).checkState() == Qt.Checked]
@@ -434,14 +465,52 @@ class NomojectMainWindow(QMainWindow):
             reply = QMessageBox.question(
                 self,
                 self._("Success"),
-                self._("Registry file generated successfully. Would you like to apply it now?"),
+                self._("Registry file generated successfully. Would you like to create a startup task to apply it automatically?"),
                 QMessageBox.Yes | QMessageBox.No
             )
             
             if reply == QMessageBox.Yes:
-                os.startfile(file_path)
-                self.statusBar.showMessage(self._("Applying registry changes..."))
+                success, result = self.create_scheduled_task(file_path)
+                if success:
+                    QMessageBox.information(
+                        self,
+                        self._("Success"),
+                        self._("Startup task created successfully. The registry changes will be applied automatically at system startup.")
+                    )
+                    self.statusBar.showMessage(self._("Startup task created successfully"))
+                    
+                    # Perguntar se quer executar agora
+                    reply = QMessageBox.question(
+                        self,
+                        self._("Run Now"),
+                        self._("Would you like to run the task now?"),
+                        QMessageBox.Yes | QMessageBox.No
+                    )
+                    
+                    if reply == QMessageBox.Yes:
+                        task_name = "NomojectRegistryApply"
+                        run_cmd = f'schtasks /Run /TN "{task_name}"'
+                        subprocess.run(run_cmd, shell=True)
+                        self.statusBar.showMessage(self._("Task executed successfully"))
+                else:
+                    QMessageBox.critical(
+                        self,
+                        self._("Error"),
+                        self._("Failed to create startup task: %s") % result
+                    )
+                    self.statusBar.showMessage(self._("Error creating startup task"))
+            else:
+                reply = QMessageBox.question(
+                    self,
+                    self._("Apply Now"),
+                    self._("Would you like to apply the registry changes now?"),
+                    QMessageBox.Yes | QMessageBox.No
+                )
                 
+                if reply == QMessageBox.Yes:
+                    os.startfile(file_path)
+                    self.statusBar.showMessage(self._("Applying registry changes..."))
+            
         except Exception as e:
             QMessageBox.critical(self, self._("Error"), self._("Failed to save registry file: %s") % str(e))
             self.statusBar.showMessage(self._("Error generating registry file"))
@@ -454,4 +523,7 @@ def main():
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
-    main() 
+    if not pyuac.isUserAdmin():
+        pyuac.runAsAdmin()
+    else:
+        main()
