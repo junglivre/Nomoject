@@ -11,3 +11,4 @@ dist/
 *.pyzw
 *.pyzwz
 *.manifest
+RELEASE_*.md

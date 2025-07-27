@@ -5,17 +5,47 @@ import winreg
 import locale
 import gettext
 import urllib3
+import requests
 import warnings
 import subprocess
+import webbrowser
 from pathlib import Path
 from PyQt5.QtCore import Qt
+from packaging import version
+from datetime import datetime
 from PyQt5.QtGui import QIcon, QFont, QPalette, QColor
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                            QListWidget, QPushButton, QMessageBox, QFileDialog,
                            QLabel, QListWidgetItem, QHBoxLayout, QFrame,
                            QStatusBar, QStyleFactory, QRadioButton, QButtonGroup)
 
-VERSION = "1.0.0"
+VERSION = "1.2.0"
+
+def check_for_updates():
+    """
+    Check for updates using GitHub API.
+    Returns True if a newer version is available, False otherwise.
+    """
+    try:
+        # Get the latest release from GitHub API
+        response = requests.get(
+            "http://api.github.com/repos/junglivre/Nomoject/releases/latest",
+            timeout=5
+        )
+        response.raise_for_status()
+        
+        # Get latest version from GitHub
+        latest_version = response.json()["tag_name"].replace("v", "")
+        
+        # Compare versions
+        current_ver = version.parse(VERSION)
+        latest_ver = version.parse(latest_version)
+        
+        return latest_ver > current_ver
+        
+    except Exception:
+        # In case of any error, return False to continue with the program
+        return False
 
 # Suppress warnings from deprecated modules and other warnings
 os.environ['PYTHONWARNINGS'] = 'ignore::DeprecationWarning'
@@ -66,8 +96,20 @@ class NomojectMainWindow(QMainWindow):
         # Setup translation
         self.setup_translation()
         
+        # Check for updates
+        if check_for_updates():
+            reply = QMessageBox.question(
+                self,
+                self._("New Version Available"),
+                self._("A new version of Nomoject is available. Would you like to download it?"),
+                QMessageBox.Yes | QMessageBox.No
+            )
+            if reply == QMessageBox.Yes:
+                webbrowser.open("https://github.com/junglivre/Nomoject/releases/latest")
+                sys.exit(0)  # Exit application after opening the browser
+        
         self.setWindowTitle(self._("Nomoject - Device Manager"))
-        self.setMinimumSize(500, 400)
+        self.setMinimumSize(550, 400)
         self.resize(600, 450)
         
         # Set application style
@@ -191,6 +233,8 @@ class NomojectMainWindow(QMainWindow):
         refresh_button.clicked.connect(self.load_devices)
         self.generate_button = QPushButton(self._("Generate Registry File"))
         self.generate_button.clicked.connect(self.generate_registry_file)
+        backup_button = QPushButton(self._("Backup PCI Keys"))
+        backup_button.clicked.connect(self.backup_pci_keys)
         
         # Style buttons
         button_style = """
@@ -198,10 +242,10 @@ class NomojectMainWindow(QMainWindow):
                 background-color: #0078d4;
                 color: white;
                 border: none;
-                padding: 10px 20px;
+                padding: 8px 15px;
                 border-radius: 4px;
-                font-size: 14px;
-                min-width: 150px;
+                font-size: 12px;
+                min-width: 120px;
             }
             QPushButton:hover {
                 background-color: #1084d8;
@@ -216,9 +260,11 @@ class NomojectMainWindow(QMainWindow):
         """
         refresh_button.setStyleSheet(button_style)
         self.generate_button.setStyleSheet(button_style)
+        backup_button.setStyleSheet(button_style)
         
         # Add buttons to layout
         button_layout.addWidget(refresh_button)
+        button_layout.addWidget(backup_button)
         button_layout.addStretch()
         button_layout.addWidget(self.generate_button)
         main_layout.addWidget(button_container)
@@ -365,6 +411,8 @@ class NomojectMainWindow(QMainWindow):
                 button.setText(self._("Refresh Devices"))
             elif "Generate" in button.text() or "Gerar" in button.text():
                 button.setText(self._("Generate Registry File"))
+            elif "Backup" in button.text() or "Backup" in button.text():
+                button.setText(self._("Backup PCI Keys"))
         
         # Reload devices to update messages
         self.load_devices()
@@ -500,6 +548,12 @@ class NomojectMainWindow(QMainWindow):
         
         try:
             self.statusBar.showMessage(self._("Generating registry file..."))
+            
+            # Criar o backup primeiro
+            backup_path = file_path.rsplit('.', 1)[0] + '_backup.reg'
+            self.create_backup_file(backup_path)
+            
+            # Gerar o arquivo de registro para remoção
             with open(file_path, 'w', encoding='utf-16') as f:
                 f.write("Windows Registry Editor Version 5.00\n\n")
                 
@@ -507,12 +561,12 @@ class NomojectMainWindow(QMainWindow):
                     f.write(f"[HKEY_LOCAL_MACHINE\\{device['path']}]\n")
                     f.write('"Capabilities"=dword:00000002\n\n')
             
-            self.statusBar.showMessage(self._("Registry file generated successfully"))
+            self.statusBar.showMessage(self._("Registry file and backup generated successfully"))
             
             reply = QMessageBox.question(
                 self,
                 self._("Success"),
-                self._("Registry file generated successfully. Would you like to create a startup task to apply it automatically?"),
+                self._("Registry file and backup generated successfully. Would you like to create a startup task to apply it automatically?"),
                 QMessageBox.Yes | QMessageBox.No
             )
             
@@ -561,6 +615,126 @@ class NomojectMainWindow(QMainWindow):
         except Exception as e:
             QMessageBox.critical(self, self._("Error"), self._("Failed to save registry file: %s") % str(e))
             self.statusBar.showMessage(self._("Error generating registry file"))
+
+    def create_backup_file(self, backup_path):
+        """Creates a backup of PCI registry keys that have capabilities 6"""
+        try:
+            with open(backup_path, 'w', encoding='utf-16') as f:
+                f.write("Windows Registry Editor Version 5.00\n\n")
+                
+                for device in self.devices:
+                    f.write(f"[HKEY_LOCAL_MACHINE\\{device['path']}]\n")
+                    
+                    # Open the device key to read all values
+                    device_key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, device['path'], 0, winreg.KEY_READ)
+                    
+                    try:
+                        i = 0
+                        while True:
+                            try:
+                                name, value, type_ = winreg.EnumValue(device_key, i)
+                                
+                                # Format the value based on its type
+                                if type_ == winreg.REG_SZ:
+                                    f.write(f'"{name}"="{value}"\n')
+                                elif type_ == winreg.REG_DWORD:
+                                    f.write(f'"{name}"=dword:{value:08x}\n')
+                                elif type_ == winreg.REG_BINARY:
+                                    hex_str = ','.join([f'{b:02x}' for b in value])
+                                    f.write(f'"{name}"=hex:{hex_str}\n')
+                                elif type_ == winreg.REG_MULTI_SZ:
+                                    hex_str = ','.join([f'{ord(c):02x}' for s in value for c in s + '\0']) + '00,00'
+                                    f.write(f'"{name}"=hex(7):{hex_str}\n')
+                                
+                                i += 1
+                            except WindowsError:
+                                break
+                    finally:
+                        winreg.CloseKey(device_key)
+                    
+                    f.write("\n")
+            
+            return True
+            
+        except Exception as e:
+            QMessageBox.critical(
+                self,
+                self._("Error"),
+                self._("Failed to create backup file: %s") % str(e)
+            )
+            return False
+
+    def backup_pci_keys(self):
+        """Creates a backup of PCI registry keys that have capabilities 6"""
+        try:
+            # Create default filename with timestamp
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            default_filename = f"pci_keys_backup_{timestamp}.reg"
+            
+            file_path, _ = QFileDialog.getSaveFileName(
+                self,
+                self._("Save PCI Keys Backup"),
+                default_filename,
+                self._("Registry Files (*.reg);;All Files (*.*)")
+            )
+            
+            if not file_path:
+                return
+                
+            if not file_path.endswith('.reg'):
+                file_path += '.reg'
+            
+            self.statusBar.showMessage(self._("Creating PCI keys backup..."))
+            
+            with open(file_path, 'w', encoding='utf-16') as f:
+                f.write("Windows Registry Editor Version 5.00\n\n")
+                
+                for device in self.devices:
+                    f.write(f"[HKEY_LOCAL_MACHINE\\{device['path']}]\n")
+                    
+                    # Open the device key to read all values
+                    device_key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, device['path'], 0, winreg.KEY_READ)
+                    
+                    try:
+                        i = 0
+                        while True:
+                            try:
+                                name, value, type_ = winreg.EnumValue(device_key, i)
+                                
+                                # Format the value based on its type
+                                if type_ == winreg.REG_SZ:
+                                    f.write(f'"{name}"="{value}"\n')
+                                elif type_ == winreg.REG_DWORD:
+                                    f.write(f'"{name}"=dword:{value:08x}\n')
+                                elif type_ == winreg.REG_BINARY:
+                                    hex_str = ','.join([f'{b:02x}' for b in value])
+                                    f.write(f'"{name}"=hex:{hex_str}\n')
+                                elif type_ == winreg.REG_MULTI_SZ:
+                                    hex_str = ','.join([f'{ord(c):02x}' for s in value for c in s + '\0']) + '00,00'
+                                    f.write(f'"{name}"=hex(7):{hex_str}\n')
+                                
+                                i += 1
+                            except WindowsError:
+                                break
+                    finally:
+                        winreg.CloseKey(device_key)
+                    
+                    f.write("\n")
+            
+            self.statusBar.showMessage(self._("PCI keys backup created successfully"))
+            QMessageBox.information(
+                self,
+                self._("Success"),
+                self._("PCI keys backup created successfully at:\n%s") % file_path
+            )
+            
+        except Exception as e:
+            QMessageBox.critical(
+                self,
+                self._("Error"),
+                self._("Failed to create PCI keys backup: %s") % str(e)
+            )
+            self.statusBar.showMessage(self._("Error creating PCI keys backup"))
 
 def main():
     app = QApplication(sys.argv)

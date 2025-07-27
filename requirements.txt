@@ -2,3 +2,5 @@ pyuac==0.0.3
 PyQt5==5.15.9
 pypiwin32==223
 pyinstaller==6.3.0
+requests==2.31.0
+packaging==23.2

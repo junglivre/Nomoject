@@ -5,6 +5,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: pt_BR\n"
 
+msgid "New Version Available"
+msgstr "Nova Versão Disponível"
+
+msgid "A new version of Nomoject is available. Would you like to download it?"
+msgstr "Uma nova versão do Nomoject está disponível. Deseja baixá-la?"
+
 msgid "Nomoject - Device Manager"
 msgstr "Nomoject - Gerenciador de Dispositivos"
 
@@ -91,3 +97,33 @@ msgstr "Deseja executar a tarefa agora?"
 
 msgid "Task executed successfully"
 msgstr "Tarefa executada com sucesso" 
+
+msgid "Backup PCI Keys"
+msgstr "Fazer Backup das Chaves PCI"
+
+msgid "Save PCI Keys Backup"
+msgstr "Salvar Backup das Chaves PCI"
+
+msgid "Creating PCI keys backup..."
+msgstr "Criando backup das chaves PCI..."
+
+msgid "PCI keys backup created successfully"
+msgstr "Backup das chaves PCI criado com sucesso"
+
+msgid "PCI keys backup created successfully at:\n%s"
+msgstr "Backup das chaves PCI criado com sucesso em:\n%s"
+
+msgid "Failed to create PCI keys backup: %s"
+msgstr "Falha ao criar backup das chaves PCI: %s"
+
+msgid "Error creating PCI keys backup"
+msgstr "Erro ao criar backup das chaves PCI" 
+
+msgid "Registry file and backup generated successfully"
+msgstr "Arquivo de registro e backup gerados com sucesso"
+
+msgid "Registry file and backup generated successfully. Would you like to create a startup task to apply it automatically?"
+msgstr "Arquivo de registro e backup gerados com sucesso. Deseja criar uma tarefa de inicialização para aplicá-lo automaticamente?"
+
+msgid "Failed to create backup file: %s"
+msgstr "Falha ao criar arquivo de backup: %s" 
